@@ -1,0 +1,17 @@
+services:
+  harborcachefeeder:
+    container_name: harborcachefeeder
+    build:
+      context: .
+    environment:
+      # variables to be defined in .env file
+      - HARBOR_URL # harbor hostname and project (i.e. myharbor.mynet/acr-cache)
+      - ACRTOKEN # value of X-Static-Token header defined in ACR hook
+      - SRC_TLS # use TLS to connect to harbor registry
+      - SCRIPT_DEBUG # script in verbose mode
+    volumes:
+      - ./config:/config:ro
+    ports:
+      - 9000:9000
+    restart: unless-stopped
+    command: -verbose -hooks=hooks.json -template
