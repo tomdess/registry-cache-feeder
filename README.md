@@ -18,7 +18,7 @@ Derived from an image maintained by [`TheCatLady`](https://github.com/TheCatLady
 
 Create a Webhook on your own ACR registry, with azure cli run the following command:
 
- ```
+ ```shell
  ✗ az acr webhook create \
   --name DemoHook \
   --registry myRegistry \
@@ -57,7 +57,7 @@ Check logs:
 
 `docker compose logs -f`
 
-```
+```shell
 harborcachefeeder  | [webhook] 2025/04/30 17:56:46 version 2.8.1 starting
 harborcachefeeder  | [webhook] 2025/04/30 17:56:46 setting up os signal watcher
 harborcachefeeder  | [webhook] 2025/04/30 17:56:46 attempting to load hooks from hooks.json
