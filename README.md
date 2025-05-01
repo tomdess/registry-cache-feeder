@@ -1,14 +1,14 @@
 # ACR Harbor local cache feeder (triggered by webhook)
 
-I use Azure Container Registry as main container registry and an instance of [Harbor](https://goharbor.io/) as a local registry cache.
+I use Azure Container Registry as my main container registry and an instance of [Harbor](https://goharbor.io/) as a local registry cache.
 
-I want that as soon as a new image is pushed to ACR the image is immediately available even in local Harbor cache without waiting for fixed schedule timing.
+I want that as soon as a new image is pushed to ACR the image is immediately available even in the local Harbor cache without waiting for fixed schedule timing.
 
-To accomplish this i create a docker container to handle push events configured in a Webhook defined in ACR and for each event start a local image pull on local cache to trigger the download of new image.
+To accomplish this, I created a docker container to handle push events configured in a Webhook defined in ACR and for each event starts a local image pull on local cache to trigger the download of new image.
 
 The docker image is basically an alpine + [`webhook`](https://github.com/adnanh/webhook)  + [`skopeo`](https://github.com/containers/skopeo).
 
-Derived from image mainteined by [`TheCatLady`](https://github.com/TheCatLady/docker-webhook) i add an `app` user to avoid running webhook as root.
+Derived from an image maintained by [`TheCatLady`](https://github.com/TheCatLady/docker-webhook) i add an `app` user to avoid running webhook as root.
 
 ---
 
@@ -16,7 +16,7 @@ Derived from image mainteined by [`TheCatLady`](https://github.com/TheCatLady/do
 
 ### ACR hook configuration
 
-Create a Webhook on own ACR registry, with azure cli run the following command:
+Create a Webhook on your own ACR registry, with azure cli run the following command:
 
  ```
  ✗ az acr webhook create \
@@ -27,13 +27,13 @@ Create a Webhook on own ACR registry, with azure cli run the following command:
   --headers "X-Static-Token=mySecretTokenHash"
   
 ```
-Use an https endpoint, the authorization mechanism is quite weak cause is based on a static token, so use at least https to protect.
+Use an https endpoint, as the authorization mechanism is quite weak because it's based on a static token, so use at least https to protect.
 As a best practice the docker container should be contacted via a reverse proxy, not exposed directly on public net (i.e. see my [`docker-haproxy-certbot`](https://github.com/tomdess/docker-haproxy-certbot) project)
 
 
 ### Docker compose configuration
 
-The compose file read a local .env file to get specific values, copy DOT.env.template in .env and set your values for followinf vareiables:
+The compose file reads a local .env file to get specific values, copy DOT.env.template to .env and set your values for following vareiables:
 
 ```
 - HARBOR_URL # harbor hostname and project (i.e. myharbor.mynet/acr-cache)
